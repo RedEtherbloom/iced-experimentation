@@ -1,5 +1,5 @@
 use iced::{
-    Element, Subscription,
+    Alignment, Element, Fill, Subscription,
     widget::{column, text},
 };
 
@@ -21,8 +21,11 @@ impl RssView {
     fn view(&self) -> Element<'_, Message> {
         column![
             text("This is the ControlBar placeholder"),
-            text("This is the RssScrollbar placeholder")
+            text("This is the RssScrollbar placeholder").height(Fill)
         ]
+        .width(Fill)
+        .align_x(Alignment::Center)
+        .padding(8)
         .into()
     }
 
