@@ -1,6 +1,6 @@
 use iced::{
-    Alignment, Element, Fill, Subscription,
-    widget::{column, text},
+    Alignment, Element, Fill, Subscription, border,
+    widget::{column, container, scrollable, space, text, theme},
 };
 
 #[derive(Debug, Clone)]
@@ -21,10 +21,28 @@ impl RssView {
     fn view(&self) -> Element<'_, Message> {
         column![
             text("This is the ControlBar placeholder"),
-            text("This is the RssScrollbar placeholder").height(Fill)
+            container(
+                scrollable(column![
+                    "Test Entry 1",
+                    "Test Entry 2",
+                    space().height(400),
+                    "Test Entry 3",
+                ])
+                .height(Fill)
+                .width(Fill)
+            )
+            .align_x(Alignment::End)
+            .style(|theme: &theme::Theme| container::Style {
+                border: border::Border {
+                    width: 1.0,
+                    radius: 5.0.into(),
+                    color: theme.extended_palette().background.weak.color,
+                },
+                ..container::Style::default()
+            })
         ]
-        .width(Fill)
         .align_x(Alignment::Center)
+        .width(Fill)
         .padding(8)
         .into()
     }
