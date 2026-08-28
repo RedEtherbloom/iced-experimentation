@@ -1,12 +1,20 @@
 use iced::{
+    Alignment, Element, Fill, Font, Pixels, Subscription,
     advanced::text::Wrapping,
-    Alignment, Element, Fill, Font, Pixels, Subscription, border,
+    border,
     font::Weight,
-    widget::{column, container, keyed_column, row, scrollable, text, text::LineHeight, theme},
+    widget::{
+        button, column, container, keyed_column, row, scrollable, text, text::LineHeight, theme,
+    },
 };
+use uuid::Uuid;
 
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
-enum Message {}
+enum Message {
+    TrashEntry(Uuid),
+    SaveEntry(Uuid),
+}
 
 #[derive(Default, Debug, Clone)]
 struct RssView {}
@@ -27,11 +35,11 @@ impl RssView {
             text("This is the ControlBar placeholder"),
             container(
                 scrollable(
-                    keyed_column((1..=100).map(|i| {
+                    keyed_column((1..=100).map(|i| { let uuid = uuid::Uuid::now_v7();
                         (
-                            uuid::Uuid::now_v7(),
-                            row![
-                                container(column![
+                            uuid,
+                            container((row![
+                                column![
                                     text!("Element number {i}").font(Font {
                                         weight: Weight::Semibold,
                                         ..Default::default()
@@ -41,13 +49,16 @@ impl RssView {
                                             weight: Weight::ExtraLight,
                                             ..Default::default()
                                         }).height(height_single_line)
+                                    // TODO: Try elipsis instead
                                     .width(Fill).wrapping(Wrapping::WordOrGlyph)
-                                ])
-                                .style(style_only_border_box)
-                                .padding(8)
-                                .width(Fill)
-                            ]
-                            .into(),
+                                ],
+                                row![
+                                    button("🗑").on_press(Message::TrashEntry(uuid)),
+                                    button("✚").on_press(Message::SaveEntry(uuid)),
+                                ]
+                            ]).align_y(Alignment::Center)).style(style_only_border_box)
+                            .padding(8)
+                            .width(Fill).into(),
                         )
                     }))
                     .spacing(4)
