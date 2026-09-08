@@ -40,16 +40,16 @@ impl RssView {
                             uuid,
                             container((row![
                                 column![
-                                    text!("Element number {i}").font(Font {
+                                    container(text!("Element number {i}").font(Font {
                                         weight: Weight::Semibold,
                                         ..Default::default()
-                                    }),
+                                    })).id(format!("Rss-Item-{i}")),
                                     text!("This is a placeholder! This is a placeholder! This is a placeholder! This is a placeholder! This is a placeholder! This is a placeholder! This is a placeholder! This is a placeholder!")
                                         .font(Font {
                                             weight: Weight::ExtraLight,
                                             ..Default::default()
                                         }).height(height_single_line)
-                                    // TODO: Try elipsis instead
+                                    // IDEA: Use ellipsis when part of next release
                                     .width(Fill).wrapping(Wrapping::WordOrGlyph)
                                 ],
                                 row![
@@ -67,6 +67,7 @@ impl RssView {
                 .height(Fill)
                 .width(Fill)
                 .spacing(8)
+                .id("Rss-Items")
             )
             .align_x(Alignment::End)
             .style(style_only_border_box)
@@ -101,4 +102,25 @@ fn main() -> Result<(), iced::Error> {
     iced::application(RssView::new, RssView::update, RssView::view)
         // .subscription(RssView::subscription)
         .run()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use iced::widget::Id;
+    use iced_test::{Error, simulator};
+
+    #[test]
+    fn column_test() -> Result<(), Error> {
+        let state = RssView::default();
+        let mut ui = simulator(state.view());
+
+        let _last: Result<Vec<_>, Error> = (1..=100)
+            .map(|i| format!("Rss-Item-{i}"))
+            .map(|string| ui.find(Id::from(string)))
+            .collect();
+        _last?;
+
+        Ok(())
+    }
 }
